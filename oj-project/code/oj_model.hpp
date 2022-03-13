@@ -86,16 +86,16 @@ class OjModel
         {
             questions->push_back(kv.second);//无序插入
         }
-        //想实现顺序的排列，需要排序
+        //2.想实现顺序的排列，需要排序
         std::sort(questions->begin(), questions->end(),[](const Question& l, const Question& r){
             //比较Question当中的题目编号，按照升序排列
             return std::stoi(l.id_) < std::stoi(r.id_);
-            
-            
             });
         return true;
     }
     //提供给上层调用者一个获取单个试题的接口
+    //id:输出条件，查找题目的ID
+    //ques:输出参数，将查到的结果返回给调用者
     bool GetOneQuestion(const std::string& id, Question* ques)
     {
         auto it = ques_map_.find(id);
@@ -109,7 +109,5 @@ class OjModel
 
     private:
     std::unordered_map<std::string, Question> ques_map_;//一个题目id，对应一个题目，题目用结构体表示
-
-
 };
 
