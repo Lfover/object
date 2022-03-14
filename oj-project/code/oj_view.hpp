@@ -1,7 +1,7 @@
 //专门用来填充模板文件的
 #pragma once
 #include <iostream>
-#include "ctemplate/template.h"
+#include <ctemplate/template.h>
 
 #include <vector>
 #include "oj_model.hpp"
@@ -48,3 +48,5 @@ static void DrawOneQuestion(const Question& ques, std::string* html)
     ctemplate::Template* tl = ctemplate::Template::GetTemplate("./template/question.html", ctemplate""DO_NOT_ATRIP);
         //渲染    
         tl->Expand(html, &dict);
+}
+
