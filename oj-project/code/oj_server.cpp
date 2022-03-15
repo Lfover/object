@@ -4,7 +4,7 @@
 #include "oj_model.hpp"
 #include "tools.hpp"
 #include "oj_view.hpp"
-//#include "compile.hpp"
+#include "compile.hpp"
 
 int main()
 {
