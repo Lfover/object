@@ -150,7 +150,7 @@ static std::string UrlDecode(const std::string& str)
 }
 };
 
-
+//获取时间戳
 class TimeUtil
 {
     public:
@@ -161,6 +161,7 @@ class TimeUtil
         return tv.tv_sec + tv.tv_usec / 1000;
         }
         //[年月日 时分秒]
+        //用到time接口，和localtime接口计算的传进来的秒数，返回时分秒
         static void GetTimeStamp(std::string* TimeStamp)
         {
             time_t st;
@@ -172,8 +173,29 @@ class TimeUtil
             }
         };
 
-inline std::ostream& Log(LogLevel lev, const char* file, int line, const std::string& logmsg)
+enum LogLevel
 {
+    INFO = 0,
+    WARNING,
+    ERROR
+    FATAL
+    DEBUG
+};
+const char* Level[] = 
+{
+    "INFO",
+    "WARNING",
+    "ERROR",
+    "FATAL",
+    "DEBUG"
+};
+//lev:日志等级
+//file:文件名称
+//line:行号
+//logmsg:想要记录的气质内容 
+
+inline std::ostream& Log(LogLevel lev, const char* file, int line, const std::string& logmsg)
+{ 
     std::cout << "begin log" << std::endl;
     std::string level_info = Level[lev];
     std::cout << level_info << std::endl;
@@ -183,3 +205,5 @@ inline std::ostream& Log(LogLevel lev, const char* file, int line, const std::st
     std::cout << "[" << TimeStamp << " " << level_info << " " << file << ":" << line << "]" << " " << logmsg;
     return std::cout;
 }
+
+#define LOG(lev, msg) Log(lev, __FILE__, __LINE__, msg);

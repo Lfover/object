@@ -82,9 +82,23 @@ int main()
         req_json["code"] = user_code + ques.tail_cpp_;
         req_json["stdin"]="";
         std::cout << req_json["code"].asString() << std::endl; 
-     
+        
+        Json::Value resp_json;
+        Comliler::CompileAndRun(req_json, &resp_json);
+
+        //获取的返回结果都在resp_json当中
+        std::string err_no = resp_json["errorno"].asString();
+        std::string case_result = resp_json["stdout"].asString();
+        std;;string reason = resp_json["reason"].asString();
+
+        //填充
+        std::string html;
+        OjView::DrawCaseReault(err_no, case_result. reason, &html);
+
+        resp.set_content(html, "text/html");
 	});
-	
+    Log(INFO, __FILE__, __LINE__, "17878");
+    svr.set_base_dir("./www");
 	//服务端监听起来
 	svr.listen("0.0.0.0", 17878);
 	return 0;

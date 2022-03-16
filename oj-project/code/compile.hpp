@@ -1,5 +1,7 @@
 #pragma once
+#include <unistd.h>//alarm函数
 #include <iostream>
+#include <sys/resource.h>
 #include <string>
 #include <atomic> 
 #include <json/json.h>
@@ -64,18 +66,17 @@ class Compiler
         //5.构造响应
         (*Resp)["errorno"] = OK;
         (*Resp)["reason"] = "Compile and Run ok";
+
         std::string stdout_str;
-        FileUtil::ReadFile(StderrPath(file_nameheader), &stdout_str);
-        std::cout << stdout_str << std::endl;
+        FileUtil::ReadFile(StdoutPath(file_nameheader), &stdout_str);
         (*Resp)["stdout"] = stdout_str;
 
         std::string stderr_str;
         FileUtil::ReadFile(StderrPath(file_nameheader), &stderr_str);
-        std::cout << stderr_str << std::endl;
         (*Resp)["stderr"] = stderr_str;
-         return;
-         //6.删除临时文件
-        Clean(file_nameheader);
+        
+        //6.删除临时文件
+        //Clean(file_nameheader);
          
          return;
     }
@@ -110,9 +111,18 @@ class Compiler
         }
         else
         {
+            //注册一个定时器 alarm
+            //为的是限制代码，如果运行时间太长了
+            alarm(1);
             //child
             //进程程序替换，替换创建编译出来的可执行程序
-            int stdout_fd = open(StdoutPath(file_name).c_str, O_CREAT | O_WRONLY, 0666);
+            //内存限制
+            struct rlimit rlim;
+            rlim.rlim_cur = 30000 * 1024;
+            rlim.rlim_max = RLIM_INFINITY;
+            setrlimit(RLIMIT_AS, &rlim);
+
+            int stdout_fd = open(StdoutPath(file_name).c_str(), O_CREAT | O_WRONLY, 0666);
             if(stdout_fd < 0)
             {
                 return -2;
@@ -120,13 +130,14 @@ class Compiler
             //重定向，将标准输入1重定向到stdin_fd中
             dup2(stderr_fd, 1);
 
-            int stderr_fd = open(StdoutPath(file_name).c_str, O_CREAT | O_WRONLY, 0666);
+            int stderr_fd = open(StderrPath(file_name).c_str, O_CREAT | O_WRONLY, 0666);
             if(stderr_fd < 0)
             {
                 return -2;
             }
             //重定向，将标准错误1重定向到stderr_fd中
             dup2(stderr_fd, 2);
+
             execl(ExePath(file_name).c_str(), ExePath(file_name).c_str(), NULL);
             exit(0);
         }
@@ -157,7 +168,9 @@ class Compiler
             dup2(fd, 2);
 
             execlp("g++", "g++", SrcPath(filename).c_str(), "-o", ExePath(file_name).c_str(), "-std=c++11", "-D", "CompileOnline", NULL);
+            close(fd);
             //如果替换失败了，就直接让子进程退出了， 如果替换成功了，不会走该逻辑
+            
             exit(0);
 
         }
@@ -166,7 +179,7 @@ class Compiler
             return false;
         }
         //如果编译成功了，在tmp_file这个文件夹下,一定会差生一个可执行程序，
-        //如果当前代码走到这里，判断有该可执行程序，则我们认为g++之心发成功了， 否则，认为执行失败
+        //如果当前代码走到这里，判断有该可执行程序，则我们认为g++执行成功了， 否则，认为执行失败
         //1.判断是否产生可执行程序, 2.是文件状态
         struct stat st;
         int ret = stat(ExePath(file_name).c_str(), &st);
@@ -202,6 +215,7 @@ class Compiler
     {
         //1.组织文件名称，区分源码文件，以及后面生成的可执行程序文件
         static std::atomic_uint id(0);
+        //第一部分tem_,第二部分是时间戳，第三部分是一个线程安全的id
         std::string tmp_filename = "tmp_" + std::to_string(TimeUtil::GetTimeStampMs()) + "." + std::to_string(id);
         id++;
         //2.code写到文件当中去
