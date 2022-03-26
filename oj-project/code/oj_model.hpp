@@ -24,6 +24,7 @@ class OjModel
     public:
     OjModel()
     {
+        //拿到配置文件
         Load("./ob_data/oj_config.cfg");
     }
     ~OjModel()
@@ -32,7 +33,7 @@ class OjModel
     }
 
     //从文件当中获取题目信息
-    bool Load(std::string& filename)
+    bool Load(const std::string& filename)
     {
         //fopen open c++ fstream
         //文件数去流
@@ -44,7 +45,7 @@ class OjModel
         }
         //1.打开文件成功的情况
         //1.1从文件中获取一行信息
-        //1.1.1对于每一行信息，还需要获取题号，一幕名曾，题目难易程度，题目路径
+        //1.1.1对于每一行信息，还需要获取题号，题目名称，题目难易程度，题目路径
         //1.1.2保存在结构体当中
         //2。把多个question，组织在map当中 
         std::string line;
@@ -73,9 +74,9 @@ class OjModel
 
             //将ques保存
             ques_map_[ques.id_] = ques;
-            }
-            file.close();
-            return true;
+        }
+        file.close();
+        return true;
    }
     //提供给上层调用着一个获取所有试题的接口
     bool GetAllQuestion()

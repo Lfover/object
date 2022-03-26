@@ -16,6 +16,7 @@ int main()
 	
 	//2.提供三个接口，分别处理三个请求
 	//2.1获取整个试题列表，get
+    //"第一个参数"就是资源路径
 	svr.Get("/all_questions",[&model](const Request& rep, Response& resp){
 		//返回试题列表
         std::vector<Question> questions;
