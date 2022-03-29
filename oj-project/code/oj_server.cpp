@@ -36,7 +36,7 @@ int main()
 	});//all_questions是资源路径；lamdar表达式[]是传递的参数，（）是参数，{}是lamdar表达式的实现
 	//2.2获取单个试题
 	//如何标识浏览器想要获取的是哪一个试题
-    //\d:表示一个数字
+    //\d:表示一个数字[0, 9]
     //\d+：表示多位数字
 	svr.Get(R("/question/(\d+))", [&model](const Request& rep, Response& resp){
         //1.获取url当中关于试题的数字,获取单个试题的信息

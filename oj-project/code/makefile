@@ -1,3 +1,2 @@
 oj_svr:oj_server.cpp
-	g++ $^ -o $@ -I /home/limengru/object/ThirdPartLibForCpp/el7.x86_64/third_part/include/ctemplate
-	-L -g -lpthread
+	g++ $^ -o $@ -g -lpthread -I /home/limengru/third_part/include -L /home/limengru/third_part/lib -lctemplate

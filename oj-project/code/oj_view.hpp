@@ -2,7 +2,6 @@
 #pragma once
 #include <iostream>
 #include <ctemplate/template.h>
-
 #include <vector>
 #include "oj_model.hpp"
 
@@ -21,6 +20,11 @@ class OjView
             //TemplateDictionary* AddSectionDictionary(const TemplateString section_name);
             ctemplate::TemplateDictionary* sub_dict = dict.AddSectionDictionary("question");
             //为了往谷歌下的一个模板里填充题目的信息
+            //void SetValue(const TemplateString variable, const TemplateString value);
+            /*
+             *variable:指定的是在预定义html当中的变量名称
+             * value:替换的值
+             */
             sub_dict->SetValue("id", ques.id_);
             sub_dict->SetValue("id", ques.id_);
             sub_dict->SetValue("title", ques.title_);
@@ -28,8 +32,8 @@ class OjView
 
         }
         //3.填充
-        ctemplate::Template* tl = ctemplate::Template::GetTemplate("./template/all_questions.html", ctemplate""DO_NOT_ATRIP);
-        //渲染
+        ctemplate::Template* tl = ctemplate::Template::GetTemplate("./template/all_questions.html", ctemplate::DO_NOT_ATRIP);
+        //渲染方式
         
         tl->Expand(html, &dict);
 
