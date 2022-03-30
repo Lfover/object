@@ -1,18 +1,17 @@
 #pragma once
 #include <unistd.h>//alarm函数
 #include <iostream>
-#include <sys/resource.h>
-#include <string>
-#include <atomic> 
-#include <json/json.h>
-#include "tools.hpp"
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/stat.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <string>
+#include <sys/resource.h>
+#include <json/json.h>
+#include <atomic> 
+#include "tools.hpp"
 enum ErrorNo
 {
-    OK = 0;
+    OK = 0,
     PRAM_ERROR,
     INTERNAL_ERROR,
     COMPILE_ERROR,
@@ -48,20 +47,21 @@ class Compiler
         {
             (*Resp)["errorno"] = COMPILE_ERROR;
             std::string reason;
-            FileUtil::ReadFile(CompileErrorPath(file_nameheader), &reason)
+            FileUtil::ReadFile(CompileErrorPath(file_nameheader), &reason);
             (*Resp)["reason"] = reason;
             return;
         }
 
 
         //4.运行
-        int ret = Run(file_nameheader)
+        int ret = Run(file_nameheader);
         //-1 -2 大于0
         if(ret != 0)
         {
-            (*Resp)["errorno"] = RUN_ERROR
+            (*Resp)["errorno"] = RUN_ERROR;
             (*Resp)["reason"] == "program exit by sig:" + std::to_string(ret);
-            return; 
+            return;
+        }
 
         //5.构造响应
         (*Resp)["errorno"] = OK;
@@ -96,7 +96,7 @@ class Compiler
     {
         //1.创建子进程
         //2.子进程程序替换
-        int pid = fork(0;
+        int pid = fork();
         if(pid < 0)
         {
             return -1;
@@ -105,9 +105,9 @@ class Compiler
         {
             //father
             int status = 0;
-            waitpid(pid, &status, 0)
+            waitpid(pid, &status, 0);
             //终止信号
-            return status & 0x7f
+            return status & 0x7f;
         }
         else
         {
@@ -128,7 +128,7 @@ class Compiler
                 return -2;
             }
             //重定向，将标准输入1重定向到stdin_fd中
-            dup2(stderr_fd, 1);
+            dup2(stdout_fd, 1);
 
             int stderr_fd = open(StderrPath(file_name).c_str, O_CREAT | O_WRONLY, 0666);
             if(stderr_fd < 0)
@@ -167,7 +167,7 @@ class Compiler
             //将标准错误重定向为fd,标准错误的输出就会输出在文件当中
             dup2(fd, 2);
 
-            execlp("g++", "g++", SrcPath(filename).c_str(), "-o", ExePath(file_name).c_str(), "-std=c++11", "-D", "CompileOnline", NULL);
+            execlp("g++", "g++", SrcPath(file_name).c_str(), "-o", ExePath(file_name).c_str(), "-std=c++11", "-D", "CompileOnline", NULL);
             close(fd);
             //如果替换失败了，就直接让子进程退出了， 如果替换成功了，不会走该逻辑
             

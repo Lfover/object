@@ -63,6 +63,6 @@ class OjView
         dict.SetValue("case_result", q_result);
         //渲染
         ctemplate::Template* tl = ctemplate::Template::GetTemplate("./template/case_reasult.html", ctemplate::DO_NOT_STRIP);
-
+        tl->Expand(html,&dict);
     }
 };

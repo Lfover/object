@@ -85,10 +85,10 @@ class OjModel
         //对于每个试题，都是一个question结构体对象
         for(const auto& kv:ques_map_)
         {
-            questions->push_back(kv.second);//无序插入
+            Questions->push_back(kv.second);//无序插入
         }
         //2.想实现顺序的排列，需要排序
-        std::sort(questions->begin(), questions->end(),[](const Question& l, const Question& r){
+        std::sort(Questions->begin(), Questions->end(),[](const Question& l, const Question& r){
             //比较Question当中的题目编号，按照升序排列
             return std::stoi(l.id_) < std::stoi(r.id_);
             });
