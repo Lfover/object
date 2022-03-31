@@ -5,6 +5,8 @@
 #include <boost/algorithm/string.hpp> 
 #include <vector>
 #include <unordered_map>
+#include <sys/time.h>
+#include <unistd.h>
 
 
 class FileUtil
@@ -54,7 +56,7 @@ class StringUtil
         boost::split(*output, input, boost::is_any_of(split_char), boost::token_compress_off);
 
     }
-}
+};
 
 class UrlUtil
 {
@@ -67,7 +69,7 @@ class UrlUtil
     static void PraseBody(const std::string& body, std::unordered_map<std::string, std::string>* body_kv)
     {
         std::vector<std::string> kv_vec;
-        StringUtil::Split(body, "&",&kv_vec);
+        StringUtil::Split(body, "&", &kv_vec);
 
         for(const auto& t : kv_vec)
         {
@@ -115,8 +117,8 @@ class UrlUtil
                     else
                     {
                         strTemp += '%';
-                        strTemp + ToHex((unsigned char)str[i] >> 4);
-                        strTemp + ToHex((unsigned char)str[i] % 16);
+                        strTemp += ToHex((unsigned char)str[i] >> 4);
+                        strTemp += ToHex((unsigned char)str[i] % 16);
                     }
         }
         return strTemp;
@@ -157,7 +159,7 @@ class TimeUtil
         static void GetTimeStamp(std::string* TimeStamp)
         {
             time_t st;
-            time(&st);                                                                    
+                        time(&st);                                                                    
             struct tm* t = localtime(&st);
             char buf[30] = { 0 };
             snprintf(buf, sizeof(buf) - 1, "%04d-%02d-%02d %02d:%02d:%02d", t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec);

@@ -6,8 +6,9 @@
 #include <fcntl.h>
 #include <string>
 #include <sys/resource.h>
-#include <json/json.h>
+#include <jsoncpp/json/json.h>
 #include <atomic> 
+//#include <sys/types.h>
 #include "tools.hpp"
 enum ErrorNo
 {
@@ -74,14 +75,11 @@ class Compiler
         std::string stderr_str;
         FileUtil::ReadFile(StderrPath(file_nameheader), &stderr_str);
         (*Resp)["stderr"] = stderr_str;
-        
         //6.删除临时文件
-        //Clean(file_nameheader);
-         
+         //Clean(file_nameheader);  
          return;
     }
     private:
-
      //一个删除临时文件的函数
      static void Clean(const std::string& filename)
      {
@@ -90,7 +88,6 @@ class Compiler
          unlink(ExePath(filename).c_str());
          unlink(StdoutPath(filename).c_str());
          unlink(StderrPath(filename).c_str());
-
      }
     static int Run(const std::string& file_name)
     {
@@ -121,7 +118,6 @@ class Compiler
             rlim.rlim_cur = 30000 * 1024;
             rlim.rlim_max = RLIM_INFINITY;
             setrlimit(RLIMIT_AS, &rlim);
-
             int stdout_fd = open(StdoutPath(file_name).c_str(), O_CREAT | O_WRONLY, 0666);
             if(stdout_fd < 0)
             {
@@ -129,15 +125,13 @@ class Compiler
             }
             //重定向，将标准输入1重定向到stdin_fd中
             dup2(stdout_fd, 1);
-
-            int stderr_fd = open(StderrPath(file_name).c_str, O_CREAT | O_WRONLY, 0666);
+            int stderr_fd = open(StderrPath(file_name).c_str(), O_CREAT | O_WRONLY, 0666);
             if(stderr_fd < 0)
             {
                 return -2;
             }
             //重定向，将标准错误1重定向到stderr_fd中
             dup2(stderr_fd, 2);
-
             execl(ExePath(file_name).c_str(), ExePath(file_name).c_str(), NULL);
             exit(0);
         }
@@ -169,10 +163,8 @@ class Compiler
 
             execlp("g++", "g++", SrcPath(file_name).c_str(), "-o", ExePath(file_name).c_str(), "-std=c++11", "-D", "CompileOnline", NULL);
             close(fd);
-            //如果替换失败了，就直接让子进程退出了， 如果替换成功了，不会走该逻辑
-            
+            //如果替换失败了，就直接让子进程退出了， 如果替换成功了，不会走该逻辑 
             exit(0);
-
         }
         else
         {

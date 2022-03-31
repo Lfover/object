@@ -25,7 +25,7 @@ class OjModel
     OjModel()
     {
         //拿到配置文件
-        Load("./ob_data/oj_config.cfg");
+        Load("./oj_data/oj_config.cfg");
     }
     ~OjModel()
     {
@@ -42,6 +42,7 @@ class OjModel
         if(!file.is_open())
         {
             std::cout << "config file open failed" << std::endl;
+            return false;
         }
         //1.打开文件成功的情况
         //1.1从文件中获取一行信息
@@ -55,10 +56,10 @@ class OjModel
             //切割一行的信息
             //切割后的信息存在vec_中
             std::vector<std::string> vec;
-            StringUtil::Split(line, "/t", &vec);//按/t分割
+            StringUtil::Split(line, "\t", &vec);//按/t分割
             //is_any_of:支持多个字符作为分隔符
             // token_compress_off：是否将多个分隔字符看作是一个
-            boost::split(vec, line, boost::is_any_of(" "), boost::token_compress_off);
+            //boost::split(vec, line, boost::is_any_of(" "), boost::token_compress_off);
             
             Question ques;
             ques.id_ = vec[0];
@@ -79,16 +80,16 @@ class OjModel
         return true;
    }
     //提供给上层调用着一个获取所有试题的接口
-    bool GetAllQuestion()
+    bool GetAllQuestion(std::vector<Question>* questions)
     {
         //1.遍历无序的map，将试题信息返回给调用者
         //对于每个试题，都是一个question结构体对象
         for(const auto& kv:ques_map_)
         {
-            Questions->push_back(kv.second);//无序插入
+            questions->push_back(kv.second);//无序插入
         }
         //2.想实现顺序的排列，需要排序
-        std::sort(Questions->begin(), Questions->end(),[](const Question& l, const Question& r){
+        std::sort(questions->begin(), questions->end(),[](const Question& l, const Question& r){
             //比较Question当中的题目编号，按照升序排列
             return std::stoi(l.id_) < std::stoi(r.id_);
             });

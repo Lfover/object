@@ -1,7 +1,7 @@
 //专门用来填充模板文件的
 #pragma once
 #include <iostream>
-#include <ctemplate/template.h>
+#include "ctemplate/template.h"
 #include <vector>
 #include "oj_model.hpp"
 
@@ -32,7 +32,7 @@ class OjView
 
         }
         //3.填充
-        ctemplate::Template* tl = ctemplate::Template::GetTemplate("./template/all_questions.html", ctemplate::DO_NOT_ATRIP);
+        ctemplate::Template* tl = ctemplate::Template::GetTemplate("./template/all_questions.html", ctemplate::DO_NOT_STRIP);
         //渲染方式
         
         tl->Expand(html, &dict);
@@ -43,7 +43,6 @@ class OjView
     {
         ctemplate::TemplateDictionary dict("question");
         dict.SetValue("id", ques.id_);
-
         dict.SetValue("title", ques.title_);
         dict.SetValue("star", ques.star_);
         dict.SetValue("desc", ques.desc_);
@@ -62,7 +61,7 @@ class OjView
         dict.SetValue("compile_result", reason);
         dict.SetValue("case_result", q_result);
         //渲染
-        ctemplate::Template* tl = ctemplate::Template::GetTemplate("./template/case_reasult.html", ctemplate::DO_NOT_STRIP);
+        ctemplate::Template* tl = ctemplate::Template::GetTemplate("./template/case_result.html", ctemplate::DO_NOT_STRIP);
         tl->Expand(html,&dict);
     }
 };

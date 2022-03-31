@@ -1,5 +1,4 @@
 #include <iostream>
-#include <stdio.h>
 #include <cstdio>
 #include <jsoncpp/json/json.h>
 #include "httplib.h"
@@ -35,8 +34,8 @@ int main()
 	svr.Get(R"(/question/(\d+))", [&model](const Request& req, Response& resp){
         //1.获取url当中关于试题的数字,获取单个试题的信息
         //std::cout << req.matches[0] << " " << req.matches[1] << std::endl;
-         //std::cout << req.version << " " << req.method << std::endl;
-         //std::cout << req.path << std::endl;
+         std::cout << req.version << " " << req.method << std::endl;
+         std::cout << req.path << std::endl;
         Question ques;
         model.GetOneQuestion(req.matches[1].str(), &ques);
         //2.   渲染模板的html文件
@@ -62,7 +61,7 @@ int main()
         //1.获取试题
         //获取当前题目的所有信息
         //1.获取题目id
-        std::string ques_id = req.matches[1].str();
+       // std::string ques_id = req.matches[1].str();
         //获取题目内容
         Question ques;
         model.GetOneQuestion(req.matches[1].str(), &ques);
@@ -73,12 +72,16 @@ int main()
         //vec保存切割的内容
         std::unordered_map<std::string, std::string> body_kv;
         UrlUtil::PraseBody(req.body, &body_kv);
+        //获取完整的源文件code_tail.cpp
+        //std::string src = body_kv["code"] + ques.tail_cpp_;
+
         //2.构造json对象，交给编译运行模块
         std::string user_code = body_kv["code"];
         Json::Value req_json;
         req_json["code"] = user_code + ques.tail_cpp_;
         req_json["stdin"]="";
         std::cout << req_json["code"].asString() << std::endl; 
+        //获取的结果都在resp_json中
         Json::Value resp_json;
         Compiler::CompileAndRun(req_json, &resp_json);
         //获取的返回结果都在resp_json当中
@@ -87,10 +90,10 @@ int main()
         std::string reason = resp_json["reason"].asString();
         //填充
         std::string html;
-        OjView::DrawCaseReault(err_no, case_result, reason, &html);
+        OjView::DrawCaseResult(err_no, case_result, reason, &html);
         resp.set_content(html, "text/html");
 	});
-   // LOG(INFO, "listen_port") << ": 17878" << std::endl;
+    //LOG(INFO, "17878") << ":" << std::endl;
     svr.set_base_dir("./www");
 	//服务端监听起来
 	svr.listen("0.0.0.0", 17878);
