@@ -1,0 +1,3 @@
+./tmp_file/tmp_1647331024.0.cpp:1:1: error: ‘sfs’ does not name a type
+ sfs
+ ^~~

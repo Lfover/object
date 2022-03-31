@@ -1,0 +1,4 @@
+./tmp_file/tmp_1648738907.0.cpp: In member function ‘bool Solution::isPalindrome(int)’:
+./tmp_file/tmp_1648738907.0.cpp:11:1: error: ‘afjalfjqo’ was not declared in this scope
+ afjalfjqo
+ ^~~~~~~~~
