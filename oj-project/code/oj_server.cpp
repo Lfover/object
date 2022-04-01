@@ -93,7 +93,7 @@ int main()
         OjView::DrawCaseResult(err_no, case_result, reason, &html);
         resp.set_content(html, "text/html");
 	});
-    //LOG(INFO, "17878") << ":" << std::endl;
+    LOG(INFO, "listen_port") << ": 17878" << std::endl;
     svr.set_base_dir("./www");
 	//服务端监听起来
 	svr.listen("0.0.0.0", 17878);

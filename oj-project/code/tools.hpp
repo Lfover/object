@@ -159,7 +159,7 @@ class TimeUtil
         static void GetTimeStamp(std::string* TimeStamp)
         {
             time_t st;
-                        time(&st);                                                                    
+            time(&st);
             struct tm* t = localtime(&st);
             char buf[30] = { 0 };
             snprintf(buf, sizeof(buf) - 1, "%04d-%02d-%02d %02d:%02d:%02d", t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec);
@@ -186,7 +186,7 @@ const char* Level[] =
 //lev:日志等级
 //file:文件名称
 //line:行号
-//logmsg:想要记录的气质内容 
+//logmsg:想要记录的日志内容 
 
 inline std::ostream& Log(LogLevel lev, const char* file, int line, const std::string& logmsg)
 { 
@@ -200,4 +200,4 @@ inline std::ostream& Log(LogLevel lev, const char* file, int line, const std::st
     return std::cout;
 }
 
-#define LOG(lev, msg) Log(lev, __FILE__, __LINE__, msg);
+#define LOG(lev, msg) Log(lev, __FILE__, __LINE__, msg)

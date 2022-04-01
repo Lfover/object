@@ -113,7 +113,7 @@ class Compiler
             alarm(1);
             //child
             //进程程序替换，替换创建编译出来的可执行程序
-            //内存限制
+            //内存限制需要包含头文件#include <sys/resource.h>
             struct rlimit rlim;
             rlim.rlim_cur = 30000 * 1024;
             rlim.rlim_max = RLIM_INFINITY;
@@ -172,7 +172,8 @@ class Compiler
         }
         //如果编译成功了，在tmp_file这个文件夹下,一定会差生一个可执行程序，
         //如果当前代码走到这里，判断有该可执行程序，则我们认为g++执行成功了， 否则，认为执行失败
-        //1.判断是否产生可执行程序, 2.是文件状态
+        //1.判断是否产生可执行程序, 2.是文件状态,stat是用来判断程序到底有没有生成可执行文件
+        //如果stat函数返回0，代表有可执行的程序
         struct stat st;
         int ret = stat(ExePath(file_name).c_str(), &st);
         if(ret < 0)
